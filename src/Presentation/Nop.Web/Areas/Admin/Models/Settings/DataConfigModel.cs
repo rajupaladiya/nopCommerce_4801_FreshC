@@ -31,5 +31,17 @@ public partial record DataConfigModel : BaseNopModel, IConfigModel
     [UIHint("Int32Nullable")]
     public int? MinPoolSize { get; set; }
 
+    [NopResourceDisplayName("Admin.Configuration.AppSettings.Data.ConnectionLifetime")]
+    [UIHint("Int32Nullable")]
+    public int? ConnectionLifetime { get; set; }
+
+    [NopResourceDisplayName("Admin.Configuration.AppSettings.Data.MultipleActiveResultSets")]
+    [UIHint("BooleanNullable")]
+    public bool? MultipleActiveResultSets { get; set; }
+
+    [NopResourceDisplayName("Admin.Configuration.AppSettings.Data.MultiSubnetFailover")]
+    [UIHint("BooleanNullable")]
+    public bool? MultiSubnetFailover { get; set; }
+
     #endregion
 }

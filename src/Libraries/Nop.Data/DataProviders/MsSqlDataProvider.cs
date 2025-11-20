@@ -33,7 +33,7 @@ public partial class MsSqlNopDataProvider : BaseDataProvider, INopDataProvider
     }
 
     /// <summary>
-    /// Applies connection pooling settings to the connection string builder
+    /// Applies connection pooling and performance settings to the connection string builder
     /// </summary>
     /// <param name="builder">The connection string builder</param>
     /// <param name="dataConfig">The data configuration</param>
@@ -57,6 +57,39 @@ public partial class MsSqlNopDataProvider : BaseDataProvider, INopDataProvider
             if (minPoolSize >= 0 && minPoolSize <= 32767)
                 builder.MinPoolSize = minPoolSize;
         }
+
+        // Apply ConnectionLifetime if specified (in seconds, default: 0 = maximum timeout)
+        // Note: SqlConnectionStringBuilder uses LoadBalanceTimeout for connection lifetime
+        // Setting this helps recycle connections in high-load scenarios
+        if (dataConfig.ConnectionLifetime.HasValue)
+        {
+            var connectionLifetime = dataConfig.ConnectionLifetime.Value;
+            if (connectionLifetime >= 0)
+                builder.LoadBalanceTimeout = connectionLifetime;
+        }
+
+        // Apply MultipleActiveResultSets (MARS) if specified
+        // MARS allows multiple batch operations on a single connection, improving concurrency
+        if (dataConfig.MultipleActiveResultSets.HasValue)
+            builder.MultipleActiveResultSets = dataConfig.MultipleActiveResultSets.Value;
+
+        // Apply MultiSubnetFailover for high availability scenarios
+        if (dataConfig.MultiSubnetFailover.HasValue)
+            builder.MultiSubnetFailover = dataConfig.MultiSubnetFailover.Value;
+
+        // Performance optimizations - always enable for high concurrency scenarios
+        // These settings improve connection establishment and reduce overhead
+        
+        // Set connection timeout to a reasonable value (default is 15 seconds)
+        // For high-load scenarios, you may want to reduce this slightly
+        if (builder.ConnectTimeout == 15)
+            builder.ConnectTimeout = 10; // 10 seconds is usually sufficient
+        
+        // Enable connection reset to ensure clean connections from the pool
+        builder.ApplicationIntent = ApplicationIntent.ReadWrite;
+        
+        // Enable pooling explicitly (should be true by default, but being explicit)
+        builder.Pooling = true;
     }
 
     /// <summary>

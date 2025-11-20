@@ -59,5 +59,35 @@
                 <span class="text-muted">@T("Admin.Configuration.AppSettings.Data.MinPoolSize.Hint")</span>
             </div>
         </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="DataConfigModel.ConnectionLifetime" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="DataConfigModel.ConnectionLifetime" />
+                <span asp-validation-for="DataConfigModel.ConnectionLifetime"></span>
+                <span class="text-muted">@T("Admin.Configuration.AppSettings.Data.ConnectionLifetime.Hint")</span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="DataConfigModel.MultipleActiveResultSets" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="DataConfigModel.MultipleActiveResultSets" />
+                <span asp-validation-for="DataConfigModel.MultipleActiveResultSets"></span>
+                <span class="text-muted">@T("Admin.Configuration.AppSettings.Data.MultipleActiveResultSets.Hint")</span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="DataConfigModel.MultiSubnetFailover" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="DataConfigModel.MultiSubnetFailover" />
+                <span asp-validation-for="DataConfigModel.MultiSubnetFailover"></span>
+                <span class="text-muted">@T("Admin.Configuration.AppSettings.Data.MultiSubnetFailover.Hint")</span>
+            </div>
+        </div>
     }
 </div>

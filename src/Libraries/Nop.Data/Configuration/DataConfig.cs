@@ -45,6 +45,24 @@ public partial class DataConfig : IConfig, IConnectionStringAccessor
     public int? MinPoolSize { get; set; } = null;
 
     /// <summary>
+    /// Gets or sets the maximum time (in seconds) a connection object can live in the pool before being destroyed (Relates to SQL Server only).
+    /// The default value is 0, which means connections have the maximum timeout. For high-load scenarios, consider setting this to recycle connections (e.g., 1800 seconds = 30 minutes).
+    /// </summary>
+    public int? ConnectionLifetime { get; set; } = null;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether multiple active result sets (MARS) are enabled (Relates to SQL Server only).
+    /// MARS allows multiple batch operations to execute on a single connection. Can improve performance for applications with high concurrency.
+    /// </summary>
+    public bool? MultipleActiveResultSets { get; set; } = null;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to use multi-subnet failover for high availability scenarios (Relates to SQL Server only).
+    /// When true, enables faster failover to a database mirror or Always On Availability Group across subnets.
+    /// </summary>
+    public bool? MultiSubnetFailover { get; set; } = null;
+
+    /// <summary>
     /// Gets a section name to load configuration
     /// </summary>
     [JsonIgnore]
