@@ -6,6 +6,7 @@ using Nop.Services.Topics;
 using Nop.Web.Factories;
 using Nop.Web.Framework;
 using Nop.Web.Framework.Mvc.Filters;
+using StaticContentResponseCacheAttribute = Nop.Web.Framework.Mvc.Filters.StaticContentResponseCacheAttribute;
 
 namespace Nop.Web.Controllers;
 
@@ -44,6 +45,7 @@ public partial class TopicController : BasePublicController
 
     #region Methods
 
+    [StaticContentResponseCache]
     public virtual async Task<IActionResult> TopicDetails(int topicId)
     {
         var topic = await _topicService.GetTopicByIdAsync(topicId);

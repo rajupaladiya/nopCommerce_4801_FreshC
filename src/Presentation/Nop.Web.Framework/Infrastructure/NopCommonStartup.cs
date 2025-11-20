@@ -43,6 +43,14 @@ public partial class NopCommonStartup : INopStartup
             //add constraint key for language
             options.ConstraintMap[NopRoutingDefaults.LanguageParameterTransformer] = typeof(LanguageParameterTransformer);
         });
+
+        //add response caching for static content pages (blog posts, topics)
+        services.AddResponseCaching(options =>
+        {
+            options.MaximumBodySize = 64 * 1024 * 1024; // 64 MB
+            options.SizeLimit = 100 * 1024 * 1024;      // 100 MB
+            options.UseCaseSensitivePaths = false;
+        });
     }
 
     /// <summary>
@@ -62,6 +70,10 @@ public partial class NopCommonStartup : INopStartup
 
         //use request localization
         application.UseNopRequestLocalization();
+
+        //use response caching for static content pages (blog posts, topics)
+        //Note: This must be placed after UseSession but before UseRouting
+        application.UseResponseCaching();
 
         //configure PDF
         application.UseNopPdf();

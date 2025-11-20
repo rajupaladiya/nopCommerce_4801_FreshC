@@ -75,4 +75,15 @@ public partial class CommonConfig : IConfig
     /// Default status code to set on the response when a request is rejected.
     /// </summary>
     public int RejectionStatusCode { get; set; } = 503;
+
+    /// <summary>
+    /// Gets or sets the duration (in seconds) for output caching of static content pages like blog posts and topics.
+    /// Set to 0 to disable output caching. Default is 3600 seconds (1 hour).
+    /// </summary>
+    public int StaticContentOutputCacheDuration { get; protected set; } = 3600;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether output caching is enabled for static content pages (blog posts, topics).
+    /// </summary>
+    public bool EnableStaticContentOutputCache { get; protected set; } = true;
 }

@@ -19,6 +19,7 @@ using Nop.Web.Framework.Mvc;
 using Nop.Web.Framework.Mvc.Filters;
 using Nop.Web.Framework.Mvc.Routing;
 using Nop.Web.Models.Blogs;
+using StaticContentResponseCacheAttribute = Nop.Web.Framework.Mvc.Filters.StaticContentResponseCacheAttribute;
 
 namespace Nop.Web.Controllers;
 
@@ -90,6 +91,7 @@ public partial class BlogController : BasePublicController
 
     #region Methods
 
+    [StaticContentResponseCache]
     public virtual async Task<IActionResult> List(BlogPagingFilteringModel command)
     {
         if (!_blogSettings.Enabled)
@@ -99,6 +101,7 @@ public partial class BlogController : BasePublicController
         return View("List", model);
     }
 
+    [StaticContentResponseCache]
     public virtual async Task<IActionResult> BlogByTag(BlogPagingFilteringModel command)
     {
         if (!_blogSettings.Enabled)
@@ -108,6 +111,7 @@ public partial class BlogController : BasePublicController
         return View("List", model);
     }
 
+    [StaticContentResponseCache]
     public virtual async Task<IActionResult> BlogByMonth(BlogPagingFilteringModel command)
     {
         if (!_blogSettings.Enabled)
@@ -142,6 +146,7 @@ public partial class BlogController : BasePublicController
         return new RssActionResult(feed, _webHelper.GetThisPageUrl(false));
     }
 
+    [StaticContentResponseCache]
     public virtual async Task<IActionResult> BlogPost(int blogPostId)
     {
         if (!_blogSettings.Enabled)
