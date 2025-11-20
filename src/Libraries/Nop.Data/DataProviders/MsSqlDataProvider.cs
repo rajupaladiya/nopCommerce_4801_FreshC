@@ -5,6 +5,7 @@ using LinqToDB.DataProvider;
 using LinqToDB.DataProvider.SqlServer;
 using Microsoft.Data.SqlClient;
 using Nop.Core;
+using Nop.Data.Configuration;
 using Nop.Data.Mapping;
 
 namespace Nop.Data.DataProviders;
@@ -22,9 +23,40 @@ public partial class MsSqlNopDataProvider : BaseDataProvider, INopDataProvider
     /// <returns>The connection string builder</returns>
     protected static SqlConnectionStringBuilder GetConnectionStringBuilder()
     {
-        var connectionString = DataSettingsManager.LoadSettings().ConnectionString;
+        var dataConfig = DataSettingsManager.LoadSettings();
+        var builder = new SqlConnectionStringBuilder(dataConfig.ConnectionString);
+        
+        // Apply connection pooling settings from configuration
+        ApplyConnectionPoolingSettings(builder, dataConfig);
+        
+        return builder;
+    }
 
-        return new SqlConnectionStringBuilder(connectionString);
+    /// <summary>
+    /// Applies connection pooling settings to the connection string builder
+    /// </summary>
+    /// <param name="builder">The connection string builder</param>
+    /// <param name="dataConfig">The data configuration</param>
+    protected static void ApplyConnectionPoolingSettings(SqlConnectionStringBuilder builder, DataConfig dataConfig)
+    {
+        if (dataConfig == null)
+            return;
+
+        // Apply MaxPoolSize if specified (valid range: 0-32767, default: 100)
+        if (dataConfig.MaxPoolSize.HasValue)
+        {
+            var maxPoolSize = dataConfig.MaxPoolSize.Value;
+            if (maxPoolSize >= 0 && maxPoolSize <= 32767)
+                builder.MaxPoolSize = maxPoolSize;
+        }
+
+        // Apply MinPoolSize if specified (valid range: 0-32767, default: 0)
+        if (dataConfig.MinPoolSize.HasValue)
+        {
+            var minPoolSize = dataConfig.MinPoolSize.Value;
+            if (minPoolSize >= 0 && minPoolSize <= 32767)
+                builder.MinPoolSize = minPoolSize;
+        }
     }
 
     /// <summary>
@@ -37,6 +69,22 @@ public partial class MsSqlNopDataProvider : BaseDataProvider, INopDataProvider
         ArgumentException.ThrowIfNullOrEmpty(connectionString);
 
         return new SqlConnection(connectionString);
+    }
+
+    /// <summary>
+    /// Creates a connection to a database with connection pooling settings applied
+    /// </summary>
+    /// <param name="connectionString">Connection string</param>
+    /// <returns>Connection to a database</returns>
+    protected override DbConnection CreateDbConnection(string connectionString = null)
+    {
+        // If a specific connection string is provided, use it directly
+        if (!string.IsNullOrEmpty(connectionString))
+            return GetInternalDbConnection(connectionString);
+
+        // Otherwise, get connection string with pooling settings applied
+        var builder = GetConnectionStringBuilder();
+        return GetInternalDbConnection(builder.ConnectionString);
     }
 
     #endregion
@@ -105,7 +153,8 @@ public partial class MsSqlNopDataProvider : BaseDataProvider, INopDataProvider
     {
         try
         {
-            await using var connection = GetInternalDbConnection(GetCurrentConnectionString());
+            var builder = GetConnectionStringBuilder();
+            await using var connection = GetInternalDbConnection(builder.ConnectionString);
 
             //just try to connect
             await connection.OpenAsync();
@@ -126,7 +175,8 @@ public partial class MsSqlNopDataProvider : BaseDataProvider, INopDataProvider
     {
         try
         {
-            using var connection = GetInternalDbConnection(GetCurrentConnectionString());
+            var builder = GetConnectionStringBuilder();
+            using var connection = GetInternalDbConnection(builder.ConnectionString);
             //just try to connect
             connection.Open();
 
@@ -276,6 +326,10 @@ public partial class MsSqlNopDataProvider : BaseDataProvider, INopDataProvider
             builder.UserID = nopConnectionString.Username;
             builder.Password = nopConnectionString.Password;
         }
+
+        // Apply connection pooling settings from configuration for best performance
+        var dataConfig = DataSettingsManager.LoadSettings();
+        ApplyConnectionPoolingSettings(builder, dataConfig);
 
         return builder.ConnectionString;
     }

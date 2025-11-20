@@ -23,5 +23,13 @@ public partial record DataConfigModel : BaseNopModel, IConfigModel
     [NopResourceDisplayName("Admin.Configuration.AppSettings.Data.WithNoLock")]
     public bool WithNoLock { get; set; }
 
+    [NopResourceDisplayName("Admin.Configuration.AppSettings.Data.MaxPoolSize")]
+    [UIHint("Int32Nullable")]
+    public int? MaxPoolSize { get; set; }
+
+    [NopResourceDisplayName("Admin.Configuration.AppSettings.Data.MinPoolSize")]
+    [UIHint("Int32Nullable")]
+    public int? MinPoolSize { get; set; }
+
     #endregion
 }

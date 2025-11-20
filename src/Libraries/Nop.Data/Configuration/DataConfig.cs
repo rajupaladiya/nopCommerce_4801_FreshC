@@ -32,6 +32,19 @@ public partial class DataConfig : IConfig, IConnectionStringAccessor
     public bool WithNoLock { get; set; } = false;
 
     /// <summary>
+    /// Gets or sets the maximum number of connections allowed in the connection pool for this specific connection string (Relates to SQL Server only).
+    /// The default value is 100. Valid values are between 0 and 32767.
+    /// For high-concurrency scenarios, consider increasing this value to allow more concurrent database connections.
+    /// </summary>
+    public int? MaxPoolSize { get; set; } = null;
+
+    /// <summary>
+    /// Gets or sets the minimum number of connections to be maintained in the connection pool for this specific connection string (Relates to SQL Server only).
+    /// The default value is 0. Setting a minimum pool size (e.g., 5-10) can improve performance by maintaining ready connections.
+    /// </summary>
+    public int? MinPoolSize { get; set; } = null;
+
+    /// <summary>
     /// Gets a section name to load configuration
     /// </summary>
     [JsonIgnore]

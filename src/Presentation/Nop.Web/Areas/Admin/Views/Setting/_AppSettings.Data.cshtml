@@ -39,5 +39,25 @@
                 <span asp-validation-for="DataConfigModel.WithNoLock"></span>
             </div>
         </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="DataConfigModel.MaxPoolSize" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="DataConfigModel.MaxPoolSize" />
+                <span asp-validation-for="DataConfigModel.MaxPoolSize"></span>
+                <span class="text-muted">@T("Admin.Configuration.AppSettings.Data.MaxPoolSize.Hint")</span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="DataConfigModel.MinPoolSize" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="DataConfigModel.MinPoolSize" />
+                <span asp-validation-for="DataConfigModel.MinPoolSize"></span>
+                <span class="text-muted">@T("Admin.Configuration.AppSettings.Data.MinPoolSize.Hint")</span>
+            </div>
+        </div>
     }
 </div>
